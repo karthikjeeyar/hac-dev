@@ -4,6 +4,7 @@ import * as dagre from 'dagre';
 import get from 'lodash/get';
 import { EnvironmentKind } from '../../../../../../types/coreBuildService';
 import { DAG } from '../../../../../topology/dag';
+<<<<<<< HEAD
 import {
   NODE_HEIGHT,
   NodeType,
@@ -15,6 +16,12 @@ import {
 } from '../const';
 import {
   PipelineEdgeModel,
+=======
+import { NODE_HEIGHT, NodeType, NODE_WIDTH, PipelineLayout, DAGRE_VIEWER_PROPS } from '../const';
+import {
+  PipelineEdgeModel,
+  NodeCreator,
+>>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
   NodeCreatorSetup,
   PipelineMixedNodeModel,
   WorkflowNodeModelData,
@@ -34,24 +41,48 @@ const createGenericNode: NodeCreatorSetup = (type, width?, height?) => (name, da
 });
 
 // Node variations
+<<<<<<< HEAD
 export const createWorkflowNode: (
   id: string,
   data: WorkflowNodeModelData,
 ) => PipelineMixedNodeModel = (id: string, data: WorkflowNodeModelData) =>
   createGenericNode(NodeType.WORKFLOW_NODE, data.width)(id, data);
+=======
+export const createWorkflowNode: NodeCreator<WorkflowNodeModelData> = createGenericNode(
+  NodeType.WORKFLOW_NODE,
+);
+>>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
 
 export const createSpacerNode = (node: PipelineMixedNodeModel): PipelineMixedNodeModel => ({
   id: node.id,
   type: NodeType.SPACER_NODE,
+<<<<<<< HEAD
   height: 1,
   width: 1,
+=======
+  height: 10,
+  width: 10,
+>>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
   data: {
     ...node,
   },
 });
 
+<<<<<<< HEAD
 export const getWorkflowNodes = (nodes: WorkflowNode[]): PipelineMixedNodeModel[] => {
   const nodeList: PipelineMixedNodeModel[] = nodes?.map((n) => createWorkflowNode(n.id, n.data));
+=======
+export const getNodeCreator = (type: NodeType): NodeCreator<WorkflowNodeModelData> => {
+  switch (type) {
+    case NodeType.WORKFLOW_NODE:
+    default:
+      return createWorkflowNode;
+  }
+};
+
+export const getWorkflowNodes = (node: WorkflowNode[]): PipelineMixedNodeModel[] => {
+  const nodeList: PipelineMixedNodeModel[] = node?.map((n) => createWorkflowNode(n.id, n.data));
+>>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
   const spacerNodes: PipelineMixedNodeModel[] = getSpacerNodes(nodeList, NodeType.SPACER_NODE).map(
     createSpacerNode,
   );
@@ -86,17 +117,24 @@ export const dagtoNodes = (dag: DAG): WorkflowNode[] => {
       data: {
         id: v.name,
         label: v.data.label,
+<<<<<<< HEAD
         width: v.data.width,
         runAfterTasks: v.dependancyNames,
         workflowType: v.data.workflowType || WorkflowNodeType.PIPELINE,
         isDisabled: (v.data.resources || []).length === 0,
         isParallelNode: v.data.isParallelNode || false,
+=======
+        runAfterTasks: v.dependancyNames,
+        workflowType: v.data.workflowType || WorkflowNodeType.PIPELINE,
+        isDisabled: (v.data.resources || []).length === 0,
+>>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
         resources: v.data.resources || [],
       },
     })) || [];
   return nodes;
 };
 
+<<<<<<< HEAD
 export const getMaxName = (resources: K8sResourceCommon[]): string | null => {
   if (!resources || resources.length < 1) {
     return null;
@@ -122,12 +160,15 @@ const getTextWidth = (text: string, font: string = '0.875rem RedHatText'): numbe
 export const getlabelWidth = (label: string): number =>
   getTextWidth(label) + NODE_PADDING * 2 + NODE_ICON_WIDTH;
 
+=======
+>>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
 export const workflowToNodes = (workflow: Workflow): WorkflowNode[] => {
   const workflowDag = new DAG();
 
   Object.keys(workflow).map((key) => {
     const { id, data, runBefore, runAfter, isAbstractNode, runAfterResourceKey } = workflow[key];
     const resources = data.resources || [];
+<<<<<<< HEAD
     const isParallelNode = !isAbstractNode && !runAfterResourceKey && resources.length > 1;
     const isDisabled = resources.length === 0;
 
@@ -145,6 +186,18 @@ export const workflowToNodes = (workflow: Workflow): WorkflowNode[] => {
       workflowDag.addEdges(id, wData, runBefore, runAfter);
     } else {
       const maxWidth = getlabelWidth(getMaxName(resources));
+=======
+    const wData = {
+      ...data,
+      isDisabled: resources.length === 0,
+      resources,
+    };
+
+    if (isAbstractNode || wData.isDisabled) {
+      wData.label = wData.isDisabled ? `No ${data.label} set` : data.label;
+      workflowDag.addEdges(id, wData, runBefore, runAfter);
+    } else {
+>>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
       resources.forEach((resource: K8sResourceCommon) => {
         const {
           metadata: { name },
@@ -152,15 +205,22 @@ export const workflowToNodes = (workflow: Workflow): WorkflowNode[] => {
         const resourceRunAfter = runAfterResourceKey
           ? get(resource, runAfterResourceKey, runAfter)
           : runAfter;
+<<<<<<< HEAD
         // const width = isParallelNode ? maxWidth : resource.metadata.name.length * 6 + 55;
         const width = isParallelNode ? maxWidth : getlabelWidth(name);
+=======
+
+>>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
         const workflowData = {
           ...data,
           id: name,
           label: name,
           isDisabled: false,
+<<<<<<< HEAD
           width,
           isParallelNode,
+=======
+>>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
           resources: [resource],
         };
 

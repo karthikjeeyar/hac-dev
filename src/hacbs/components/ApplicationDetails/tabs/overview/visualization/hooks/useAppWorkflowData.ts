@@ -47,10 +47,17 @@ export const useAppWorkflowData = (
 
   const workflowObject: Workflow = {
     components: {
+<<<<<<< HEAD
       id: 'components',
       isAbstractNode: true,
       data: {
         label: 'Components',
+=======
+      id: 'source-code',
+      isAbstractNode: true,
+      data: {
+        label: 'Source code',
+>>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
         workflowType: WorkflowNodeType.SOURCE,
         isDisabled: components.length === 0,
         resources: components,
@@ -62,13 +69,21 @@ export const useAppWorkflowData = (
       id: 'build',
       isAbstractNode: true,
       data: {
+<<<<<<< HEAD
         label: 'Builds',
+=======
+        label: 'Build',
+>>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
         workflowType: WorkflowNodeType.PIPELINE,
         isDisabled: buildPipelines.length === 0,
         resources: buildPipelines,
       },
       runBefore: [],
+<<<<<<< HEAD
       runAfter: ['components'],
+=======
+      runAfter: ['source-code'],
+>>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
     },
     componentTests: {
       id: 'component-integration-test',
