@@ -1,3 +1,4 @@
+import { DEFAULT_EDGE_TYPE, DEFAULT_TASK_NODE_TYPE, RunStatus } from '@patternfly/react-topology';
 import find from 'lodash/find';
 import merge from 'lodash/merge';
 import { SucceedConditionReason, runStatus, pipelineRunStatus } from '../../../shared';
@@ -135,8 +136,12 @@ const getGraphDataModel = (pipeline: PipelineKind, pipelineRun?: PipelineRunKind
       id: vertex.name,
       label: vertex.name,
       level: vertex,
-      status: vertex.data?.status?.reason,
+      type: DEFAULT_TASK_NODE_TYPE,
+      width: 170,
+      height: 30,
+      status: RunStatus.Succeeded,
       runAfterTasks,
+      showStatusState: true,
       data: {
         ...vertex.data,
       },
@@ -148,6 +153,7 @@ const getGraphDataModel = (pipeline: PipelineKind, pipelineRun?: PipelineRunKind
       node.runAfterTasks.forEach((dep) => {
         acc.push({
           id: `${dep}-${node.id}`,
+          type: DEFAULT_EDGE_TYPE,
           source: dep,
           target: node.id,
         });

@@ -46,7 +46,6 @@ beforeEach(() => {
   useBuildPipelinesMock.mockReturnValue([[], true]);
   useEnvironmentsMock.mockReturnValue([[], true]);
   useReleaseLinksMock.mockReturnValue([[], true]);
-<<<<<<< HEAD
 
   const createElement = document.createElement.bind(document);
   document.createElement = (tagName) => {
@@ -59,8 +58,6 @@ beforeEach(() => {
     }
     return createElement(tagName);
   };
-=======
->>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
 });
 
 afterEach(jest.resetAllMocks);
@@ -98,13 +95,8 @@ test('Abstract nodes should contain staic name', () => {
   const { result } = renderHook(() => useAppWorkflowData('test'));
   const [nodes] = result.current;
 
-<<<<<<< HEAD
   expect(nodes[0].data.label).toBe('Components');
   expect(nodes[1].data.label).toBe('Builds');
-=======
-  expect(nodes[0].data.label).toBe('Source code');
-  expect(nodes[1].data.label).toBe('Build');
->>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
 });
 
 test('Non Abstract nodes should contain dynamic name', () => {
@@ -140,10 +132,6 @@ test('label should change based on the availability of resources', () => {
   const sourceNode = nodes.find((n) => n.data.workflowType === WorkflowNodeType.SOURCE);
   const environmentNode = nodes.find((n) => n.data.workflowType === WorkflowNodeType.ENVIRONMENT);
 
-<<<<<<< HEAD
   expect(sourceNode.data.label).toBe('Components');
-=======
-  expect(sourceNode.data.label).toBe('Source code');
->>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
   expect(environmentNode.data.label).toBe('No environment set');
 });

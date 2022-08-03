@@ -4,7 +4,6 @@ import {
   LayoutFactory,
   ModelKind,
   Graph,
-  withPanZoom,
   PipelineDagreLayout,
   SpacerNode,
 } from '@patternfly/react-topology';
@@ -16,7 +15,7 @@ import { getLayoutData } from './utils/visualization-utils';
 export const componentFactory: ComponentFactory = (kind: ModelKind, type: string) => {
   switch (kind) {
     case ModelKind.graph:
-      return withPanZoom()(GraphComponent);
+      return GraphComponent;
     case ModelKind.edge:
       return WorkflowEdge;
     case ModelKind.node:

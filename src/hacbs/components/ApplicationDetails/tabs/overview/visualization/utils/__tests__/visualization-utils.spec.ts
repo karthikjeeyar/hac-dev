@@ -5,10 +5,7 @@ import { Workflow, WorkflowNodeType } from '../../types';
 import {
   dagtoNodes,
   getLastEnvironment,
-<<<<<<< HEAD
   getMaxName,
-=======
->>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
   getTopologyNodesEdges,
   getWorkflowNodes,
   sortEnvironments,
@@ -26,7 +23,6 @@ sampleWorkflowDag.addEdge('task2', 'task3');
 sampleWorkflowDag.addEdge('task3', 'task4');
 
 describe('getWorkflowNodes', () => {
-<<<<<<< HEAD
   beforeEach(() => {
     const createElement = document.createElement.bind(document);
     document.createElement = (tagName) => {
@@ -41,8 +37,6 @@ describe('getWorkflowNodes', () => {
     };
   });
 
-=======
->>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
   test('expect to return empty array', () => {
     const nodes = getWorkflowNodes([]);
     expect(nodes).toHaveLength(0);
@@ -96,12 +90,9 @@ describe('dagtoNodes', () => {
 });
 
 describe('workflowToNodes', () => {
-<<<<<<< HEAD
   const spyFunc = jest.fn();
   Object.defineProperty(global.document, 'create', { value: spyFunc });
 
-=======
->>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
   test('should return empty array for workflow with no steps', () => {
     const sampleWorkflow: Workflow = {};
     expect(workflowToNodes(sampleWorkflow)).toHaveLength(0);
@@ -165,7 +156,6 @@ describe('getLastEnvironment', () => {
   test('should return the last environment in the list', () => {
     expect(getLastEnvironment(sampleEnvironments)).toBe('production-environment');
   });
-<<<<<<< HEAD
 
   describe('getMaxName', () => {
     test('should return the max length resources', () => {
@@ -196,6 +186,4 @@ describe('getLastEnvironment', () => {
       expect(getMaxName([comp1, comp2, comp3])).toBe('three');
     });
   });
-=======
->>>>>>> b6b3685 (Add HAC build service application workflow visualiation)
 });
