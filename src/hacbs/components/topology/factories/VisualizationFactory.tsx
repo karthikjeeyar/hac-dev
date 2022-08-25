@@ -6,23 +6,18 @@ import {
   Visualization,
   VisualizationSurface,
   VisualizationProvider,
-  action,
-  createTopologyControlButtons,
-  defaultControlButtonsOptions,
-  TopologyControlBar,
   TopologyView,
   Controller,
   LayoutFactory,
   ComponentFactory,
-  Dimensions,
-  ScaleDetailsLevel,
 } from '@patternfly/react-topology';
-import { DROP_SHADOW_SPACING, DEFAULT_NODE_HEIGHT, TOOLBAR_HEIGHT } from './const';
+import { DROP_SHADOW_SPACING } from '../const';
 
 type VisualizationFactoryProps = {
   model: Model;
   layoutFactory: LayoutFactory;
   componentFactory: ComponentFactory;
+  controlBar?: (controller: Controller) => React.ReactNode;
 };
 
 type Size = {
@@ -34,22 +29,26 @@ const VisualizationFactory: React.FC<VisualizationFactoryProps> = ({
   model,
   layoutFactory,
   componentFactory,
+  controlBar,
 }) => {
   const [controller, setController] = React.useState<Controller>(null);
   const [maxSize, setMaxSize] = React.useState<Size>(null);
 
   const onLayoutUpdate = React.useCallback(
-    (nodes: Node[], smallNode: boolean) => {
+    (nodes: Node[]) => {
       const nodeBounds = nodes.map((node) => node.getBounds());
-      if (smallNode) {
-        nodes.map((node) => node.setDimensions(new Dimensions(30, 30)));
-      }
+
       const maxWidth = Math.floor(
         nodeBounds.map((bounds) => bounds.width).reduce((w1, w2) => Math.max(w1, w2), 0),
       );
       const maxX = Math.floor(
         nodeBounds.map((bounds) => bounds.x).reduce((x1, x2) => Math.max(x1, x2), 0),
       );
+      const maxHeight = Math.floor(
+        nodeBounds.map((bounds) => bounds.height).reduce((h1, h2) => Math.max(h1, h2), 0),
+      );
+
+      const maxObject = nodeBounds.find((nb) => nb.height === maxHeight);
 
       const maxY = Math.floor(
         nodeBounds.map((bounds) => bounds.y).reduce((y1, y2) => Math.max(y1, y2), 0),
@@ -58,9 +57,11 @@ const VisualizationFactory: React.FC<VisualizationFactoryProps> = ({
       const verticalMargin = 20;
       const horizontalMargin = 20;
 
+      const finallyTaskHeight = maxObject.y + maxHeight + DROP_SHADOW_SPACING + verticalMargin * 2;
+      const regularTaskHeight = maxY + 50 + DROP_SHADOW_SPACING + verticalMargin * 2;
+
       setMaxSize({
-        height:
-          maxY + DEFAULT_NODE_HEIGHT + DROP_SHADOW_SPACING + TOOLBAR_HEIGHT + verticalMargin * 2,
+        height: Math.max(finallyTaskHeight, regularTaskHeight),
         width: maxX + maxWidth + DROP_SHADOW_SPACING + horizontalMargin * 2,
       });
     },
@@ -74,13 +75,9 @@ const VisualizationFactory: React.FC<VisualizationFactoryProps> = ({
       visualization.registerComponentFactory(componentFactory);
       visualization.fromModel(model);
       visualization.addEventListener(GRAPH_LAYOUT_END_EVENT, () => {
-        onLayoutUpdate(
-          visualization.getGraph().getNodes(),
-          visualization.getGraph().getDetailsLevel() !== ScaleDetailsLevel.high,
-        );
+        onLayoutUpdate(visualization.getGraph().getNodes());
       });
-
-      visualization.setRenderConstraint(true, { paddingPercentage: 70 });
+      // visualization.setRenderConstraint(true, { paddingPercentage: 70 });
 
       setController(visualization);
     } else {
@@ -90,41 +87,15 @@ const VisualizationFactory: React.FC<VisualizationFactoryProps> = ({
   }, [controller, model, onLayoutUpdate, layoutFactory, componentFactory]);
 
   if (!controller) return null;
-
   return (
-    <TopologyView
-      controlBar={
-        <TopologyControlBar
-          controlButtons={createTopologyControlButtons({
-            ...defaultControlButtonsOptions,
-            zoomInCallback: action(() => {
-              controller.getGraph().scaleBy(4 / 3);
-            }),
-            zoomOutCallback: action(() => {
-              controller.getGraph().scaleBy(0.75);
-            }),
-            fitToScreenCallback: action(() => {
-              controller.getGraph().fit(70);
-            }),
-            resetViewCallback: action(() => {
-              controller.getGraph().reset();
-              controller.getGraph().layout();
-            }),
-            legend: false,
-          })}
-        />
-      }
-    >
-      <div
-        style={{ height: maxSize?.height, width: maxSize?.width }}
-        key={controller.getGraph().getDetailsLevel()}
-      >
-        <VisualizationProvider controller={controller}>
+    <div style={{ height: maxSize?.height, width: maxSize?.width }}>
+      <VisualizationProvider controller={controller}>
+        <TopologyView controlBar={controlBar ? controlBar(controller) : undefined}>
           <VisualizationSurface />
-        </VisualizationProvider>
-      </div>
-    </TopologyView>
+        </TopologyView>
+      </VisualizationProvider>
+    </div>
   );
 };
 
-export default VisualizationFactory;
+export default React.memo(VisualizationFactory);
